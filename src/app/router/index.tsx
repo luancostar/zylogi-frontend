@@ -1,15 +1,49 @@
-// Exemplo em src/app/router/index.tsx
+// Em: src/app/router/index.tsx
 import React from 'react';
-import { BrowserRouter, Routes, Route } from 'react-router-dom';
-import LoginPage from '../../features/auth/views/LoginPage';// Usando alias @/ para src/
-// Importe outros layouts e páginas
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
+import LoginPage from '../../features/auth/views/LoginPage'; // Você já tem este
+import HomePage from '../../features/auth/views/HomePage';
 
+const ProtectedRoute: React.FC = () => {
+  const isAuthenticated = !!localStorage.getItem('accessToken'); 
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" replace />;
+  }
+
+  return <Outlet />;
+};
+
+// --- 4. Componente para Redirecionamento da Raiz ---
+// (Também pode ir para um arquivo separado)
+const RootRedirect: React.FC = () => {
+  const isAuthenticated = !!localStorage.getItem('accessToken');
+  return <Navigate to={isAuthenticated ? "/home" : "/login"} replace />;
+};
+
+// --- Seu Componente AppRouter Modificado ---
 const AppRouter: React.FC = () => {
   return (
     <BrowserRouter>
       <Routes>
-        <Route path="/" element={<LoginPage />} />
-        {/* Outras rotas */}
+        {/* Rota para a página de login */}
+        <Route path="/login" element={<LoginPage />} />
+
+        {/* Rotas Protegidas */}
+        <Route element={<ProtectedRoute />}>
+          <Route path="/home" element={<HomePage />} />
+          {/* Adicione outras rotas protegidas aqui, se necessário */}
+          {/* Ex: <Route path="/dashboard" element={<DashboardPage />} /> */}
+        </Route>
+
+        {/* Rota Raiz: Redireciona com base na autenticação */}
+        <Route path="/" element={<RootRedirect />} />
+        
+        {/* Opcional: Rota "Catch-all" para páginas não encontradas */}
+        {/* Esta também pode redirecionar para a RootRedirect ou para uma página 404 dedicada */}
+        <Route path="*" element={<RootRedirect />} /> 
+        {/* Ou <Route path="*" element={<NotFoundPage />} /> se você tiver uma */}
+
       </Routes>
     </BrowserRouter>
   );

@@ -1,40 +1,29 @@
 import React, { useState, type FormEvent, type ChangeEvent, type JSX } from 'react';
+import { useNavigate } from 'react-router-dom'; // 1. Importar useNavigate
 import { loginUser } from '../services/authService';
-import type { LoginResponse } from '../types/auth.types'; 
-import formWall from '../../../assets/images/wallpaper-login.png'; 
+// import type { LoginResponse } from '../types/auth.types'; // Comentado temporariamente
+import formWall from '../../../assets/images/wallpaper-login.png';
+
+// --- Definição Placeholder para LoginResponse ---
+// IMPORTANTE: Mova esta definição para o seu arquivo ../types/auth.types.ts
+// e ajuste os campos conforme a resposta da sua API.
+interface LoginResponse {
+  access_token: string;
+  // Adicione outros campos que sua API de login retorna e que você possa precisar
+  // Ex: user?: { id: string; name: string; };
+}
+// --- Fim da Definição Placeholder ---
 
 
 const EyeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <path d="M2 12s3-7 10-7 10 7 10 7-3 7-10 7-10-7-10-7Z"></path>
     <circle cx="12" cy="12" r="3"></circle>
   </svg>
 );
 
 const EyeOffIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
-  <svg
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 24 24"
-    fill="none"
-    stroke="currentColor"
-    strokeWidth="2"
-    strokeLinecap="round"
-    strokeLinejoin="round"
-    {...props}
-  >
+  <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" {...props}>
     <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24"></path>
     <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68"></path>
     <path d="M6.61 6.61A13.526 13.526 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61"></path>
@@ -42,7 +31,6 @@ const EyeOffIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   </svg>
 );
 
-// Alterado para export default function
 export default function LoginFormNewLayout(): JSX.Element {
   const [email, setEmail] = useState<string>('');
   const [password, setPassword] = useState<string>('');
@@ -50,6 +38,7 @@ export default function LoginFormNewLayout(): JSX.Element {
   const [error, setError] = useState<string | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [loginSuccess, setLoginSuccess] = useState<boolean>(false);
+  const navigate = useNavigate(); // 2. Inicializar useNavigate
 
   const togglePasswordVisibility = () => {
     setShowPassword(!showPassword);
@@ -64,9 +53,14 @@ export default function LoginFormNewLayout(): JSX.Element {
     try {
       const data: LoginResponse = await loginUser(email, password);
       console.log('Login successful:', data);
-      // Exemplo: localStorage.setItem('accessToken', data.access_token);
-      setLoginSuccess(true);
-      // Você pode querer redirecionar o usuário aqui ou atualizar o estado global da aplicação
+      localStorage.setItem('accessToken', data.access_token); // Armazena o token
+      setLoginSuccess(true); // Mostra a mensagem de sucesso
+
+      // 3. Redirecionar após um curto período para que a mensagem seja visível
+      setTimeout(() => {
+        navigate('/home');
+      }, 1500); // Redireciona após 1.5 segundos
+
     } catch (err: unknown) {
       if (err instanceof Error) {
         setError(err.message);
@@ -80,7 +74,6 @@ export default function LoginFormNewLayout(): JSX.Element {
     }
   };
 
-  // Estilo para o background usando a imagem importada
   const backgroundStyle = {
     backgroundImage: `url(${formWall})`,
     backgroundRepeat: 'no-repeat',
@@ -117,6 +110,7 @@ export default function LoginFormNewLayout(): JSX.Element {
                   value={email}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                   required
+                  disabled={loading || loginSuccess} // Desabilita após o sucesso para evitar duplo submit
                 />
               </div>
 
@@ -130,6 +124,7 @@ export default function LoginFormNewLayout(): JSX.Element {
                   value={password}
                   onChange={(e: ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                   required
+                  disabled={loading || loginSuccess} // Desabilita após o sucesso
                 />
                 <div className="absolute inset-y-0 end-0 flex items-center pe-3">
                   <button
@@ -138,6 +133,7 @@ export default function LoginFormNewLayout(): JSX.Element {
                     className="text-gray-500 hover:text-gray-700 dark:text-neutral-500 dark:hover:text-neutral-300 focus:outline-none"
                     aria-label={showPassword ? "Ocultar senha" : "Mostrar senha"}
                     aria-pressed={showPassword}
+                    disabled={loading || loginSuccess} // Desabilita após o sucesso
                   >
                     {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                   </button>
@@ -155,7 +151,7 @@ export default function LoginFormNewLayout(): JSX.Element {
               <div className="grid">
                 <button
                   type="submit"
-                  disabled={loading}
+                  disabled={loading || loginSuccess} // Desabilita durante o loading e após o sucesso
                   className="py-3 px-4 inline-flex justify-center items-center gap-x-2 text-sm font-medium rounded-lg border border-transparent bg-blue-600 text-white hover:bg-blue-700 focus:outline-hidden focus:bg-blue-700 disabled:opacity-50 disabled:pointer-events-none"
                 >
                   {loading ? 'Entrando...' : 'Entrar'}
@@ -166,10 +162,9 @@ export default function LoginFormNewLayout(): JSX.Element {
           </div>
         </div>
 
-        {/* Div da imagem de fundo com estilo inline */}
         <div
-          className="hidden md:block md:absolute md:top-0 md:start-1/2 md:end-0 h-full" // Classes de layout do Tailwind
-          style={backgroundStyle} // Aplica o estilo de fundo inline
+          className="hidden md:block md:absolute md:top-0 md:start-1/2 md:end-0 h-full"
+          style={backgroundStyle}
         ></div>
         {/* End Col */}
       </div>
