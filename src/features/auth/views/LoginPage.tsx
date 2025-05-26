@@ -14,9 +14,9 @@ const LoginPage: React.FC = () => {
          
 
           <div className="grid items-center md:grid-cols-2 gap-8 lg:gap-12">
-            <div>
+            <div className='flex justify-center md:block'>
               
-              <div className='w-sm flex justify-center mb-0 sm:mb-16'>
+              <div className='w-xs flex justify-center mb-0 sm:mb-16'>
                 <img src={logoLight} alt="zylogi - transparência em movimento" />
               </div>
 

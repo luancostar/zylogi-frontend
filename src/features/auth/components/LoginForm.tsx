@@ -1,9 +1,9 @@
 import React, { useState, type FormEvent, type ChangeEvent, type JSX } from 'react';
-import { loginUser } from '../services/authService'; // Mantenha seu serviço de autenticação
-import type { LoginResponse } from '../types/auth.types'; // Mantenha seus tipos
-import formWall from '../../../assets/images/wallpaper-login.png'; // Importação da imagem
+import { loginUser } from '../services/authService';
+import type { LoginResponse } from '../types/auth.types'; 
+import formWall from '../../../assets/images/wallpaper-login.png'; 
 
-// Ícones SVG permanecem os mesmos
+
 const EyeIcon: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     xmlns="http://www.w3.org/2000/svg"
@@ -103,7 +103,7 @@ export default function LoginFormNewLayout(): JSX.Element {
             </p>
             {/* End Title */}
 
-            <div className="py-6 flex items-center text-sm text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:me-6 after:flex-1 after:border-t after:border-gray-200 after:ms-6 dark:text-neutral-500 dark:before:border-neutral-700 dark:after:border-neutral-700">Ou</div>
+            <div className="py-6 flex items-center text-sm text-gray-400 uppercase before:flex-1 before:border-t before:border-gray-200 before:me-6 after:flex-1 after:border-t after:border-gray-200 after:ms-6 dark:text-neutral-500 dark:before:border-neutral-700 dark:after:border-neutral-700">Login</div>
 
             {/* Form */}
             <form onSubmit={handleSubmit}>
