@@ -3,6 +3,7 @@ import { useNavigate } from 'react-router-dom'; // 1. Importar useNavigate
 import { loginUser } from '../services/authService';
 // import type { LoginResponse } from '../types/auth.types'; // Comentado temporariamente
 import formWall from '../../../assets/images/wallpaper-login.png';
+import 'preline/preline'; // Importe o JavaScript do Preline
 
 // --- Definição Placeholder para LoginResponse ---
 // IMPORTANTE: Mova esta definição para o seu arquivo ../types/auth.types.ts

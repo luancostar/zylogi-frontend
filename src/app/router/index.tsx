@@ -3,6 +3,7 @@ import React from 'react';
 import { BrowserRouter, Routes, Route, Navigate, Outlet } from 'react-router-dom';
 import LoginPage from '../../features/auth/views/LoginPage'; // Você já tem este
 import HomePage from '../../features/auth/views/HomePage';
+ import UsersPage from './../../features/auth/views/UsersPage';
 
 const ProtectedRoute: React.FC = () => {
   const isAuthenticated = !!localStorage.getItem('accessToken'); 
@@ -35,8 +36,9 @@ const AppRouter: React.FC = () => {
           {/* Adicione outras rotas protegidas aqui, se necessário */}
           {/* Ex: <Route path="/dashboard" element={<DashboardPage />} /> */}
         </Route>
-
         {/* Rota Raiz: Redireciona com base na autenticação */}
+        <Route path="/users" element={<UsersPage />} />
+
         <Route path="/" element={<RootRedirect />} />
         
         {/* Opcional: Rota "Catch-all" para páginas não encontradas */}
