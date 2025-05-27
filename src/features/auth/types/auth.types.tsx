@@ -11,3 +11,8 @@ export interface LoginResponse {
   };
   // ...quaisquer outros campos que sua API de login retorne
 }
+
+export interface ApiError {
+  message: string;
+
+}
